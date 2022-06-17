@@ -1,0 +1,26 @@
+name: Build docker image
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'mysql-backup-s3/*'
+
+jobs:
+  build_zabbix_server:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: 'Build:dockerimage'
+        uses: docker/build-push-action@v1
+        with:
+          registry: ghcr.io
+          username: "dark-vex"
+          password: ${{ secrets.REPO_SCOPED_TOKEN }}
+          repository: dark-vex/mysql-backup-s3
+          tags: latest
