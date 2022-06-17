@@ -3,8 +3,8 @@ name: Build docker image
 on:
   push:
     branches: [ master ]
-    paths:
-      - 'mysql-backup-s3/*'
+    #paths:
+    #  - 'mysql-backup-s3/*'
 
 jobs:
   build_image:
@@ -16,13 +16,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: 'Build:dockerimage'
-        uses: docker/build-push-action@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
-          context: "{{defaultContext}}:mysql-backup-s3"
-          file: mysql-backup-s3/Dockerfile
           registry: ghcr.io
           username: "dark-vex"
           password: ${{ secrets.REPO_SCOPED_TOKEN }}
-          repository: dark-vex/mysql-backup-s3
-          tags: latest
+
+      - name: 'Build:dockerimage'
+        uses: docker/build-push-action@v3
+        with:
+          context: ./mysql-backup-s3
+          file: ./mysql-backup-s3/Dockerfile
+          tags: ghcr.io/dark-vex/mysql-backup-s3:latest
+          push: true
