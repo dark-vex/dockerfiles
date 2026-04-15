@@ -44,6 +44,11 @@ You can additionally set the `SCHEDULE` environment variable like `-e SCHEDULE="
 
 More information about the scheduling can be found [here](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules).
 
+### Backup File Name / Path
+By default, if `POSTGRES_BACKUP_ALL` is true, the dump file will be put at `<S3_PREFIX=''>/all_<timestamp>.sql.gz`. When using `POSTGRES_DATABASE`, each database listed will be backed up to the object path `<S3_PREFIX=''>/<database>_<timestamp>.sql.gz`.
+
+If you wish to make these filenames static, you can use the `S3_FILE_NAME` variable, which will change these formats to `<S3_PREFIX=''>/<S3_FILE_NAME>.sql.gz` or `<S3_PREFIX=''>/<S3_FILE_NAME>_<database>.sql.gz` accordingly.
+
 ### Backup All Databases
 
 You can backup all available databases by setting `POSTGRES_BACKUP_ALL="true"`.
@@ -57,3 +62,7 @@ An Endpoint is the URL of the entry point for an AWS web service or S3 Compitabl
 You can specify an alternate endpoint by setting `S3_ENDPOINT` environment variable like `protocol://endpoint`
 
 **Note:** S3 Compitable Storage Provider requires `S3_ENDPOINT` environment variable
+
+### Encryption
+
+You can additionally set the `ENCRYPTION_PASSWORD` environment variable like `-e ENCRYPTION_PASSWORD="superstrongpassword"` to encrypt the backup. It can be decrypted using `openssl aes-256-cbc -d -in backup.sql.gz.enc -out backup.sql.gz`.
